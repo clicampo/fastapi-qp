@@ -49,3 +49,5 @@ def test_items():
     assert len(response.json()) <= 10
 ```
 
+### Acknowledgments
+This implementation is greatly inspired by @markus1978, on [this](https://github.com/tiangolo/fastapi/issues/318#issuecomment-691121286) issue.
