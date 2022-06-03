@@ -1,0 +1,1 @@
+from fastapi_qp.query_param import QueryParam

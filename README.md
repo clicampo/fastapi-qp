@@ -1,0 +1,51 @@
+<div align="center">
+
+### FastAPI Query Parameters
+
+Empower your query parameters setup on FastAPI through Pydantic
+
+</div>
+
+#### Installation
+```bash
+poetry add fastapi-qp
+```
+
+#### Usage
+You can just define a Pydantic schema describing your query parameters, and extends the class with `QueryParam`, which you'll import from the package
+
+```python
+# schemas/common.py
+from fastapi_qp import QueryParam
+
+class CommonParams(BaseModel, QueryParam):
+    since: Optional[str] = Field(None, description="A date in the format YYYY-MM-DD")
+    until: Optional[str] = Field(None, description="A date in the format YYYY-MM-DD")
+    limit: int = Field(100, description="How many entries will be returned")
+    offset: int = Field(0, description="Entries ignored from the start of result list") 
+```
+
+And then, you can use the `.params()` method to return a dependency to your route
+
+```python
+# app/main.py
+
+@app.get("/items/")
+def read_items(params: CommonParams = Depends(CommonParams.params())):
+    return get_items(offset=params.offset, limit=params.limit)
+```
+
+In testing, you can use the `.to_url()` method to get a URL component with the params encoded
+
+```python
+def _get_items(params: CommonParams):
+    client = TestClient(app)
+    
+    query = params.to_url()
+    return client.get("/items/" + query)
+
+def test_items():
+    response = _get_items(CommonParams(limit=10))
+    assert len(response.json()) <= 10
+```
+
