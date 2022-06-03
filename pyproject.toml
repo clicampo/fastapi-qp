@@ -5,13 +5,14 @@ description = ""
 authors = ["Henrique Cunha <henrycunh@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 fastapi = "^0.78.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 requests = "^2.27.1"
 pydantic = "^1.9.1"
+uvicorn = "^0.17.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
