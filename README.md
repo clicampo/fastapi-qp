@@ -4,6 +4,8 @@
 
 Empower your query parameters setup on FastAPI through Pydantic
 
+[![codecov](https://codecov.io/gh/clicampo/fastapi-qp/branch/main/graph/badge.svg?token=A9H0UNX2HD)](https://codecov.io/gh/clicampo/fastapi-qp)
+
 </div>
 
 #### Installation
