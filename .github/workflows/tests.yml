@@ -51,8 +51,8 @@ jobs:
         run: |
           set -o pipefail
           source .venv/bin/activate
-          pytest --junitxml=pytest.xml --cov=fastapi_qp test/
+          pytest --cov-report=xml --cov=fastapi_qp test/
 
       - uses: codecov/codecov-action@v2
         with:
-          files: ./pytest.xml
+          files: ./coverage.xml
