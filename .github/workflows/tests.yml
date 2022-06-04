@@ -1,4 +1,4 @@
-name: Run application tests
+name: Testing
 on:
   pull_request:
     branches:
@@ -52,7 +52,7 @@ jobs:
         run: |
           set -o pipefail
           source .venv/bin/activate
-          pytest --junitxml=pytest.xml --cov=fastapi_qp tests/
+          pytest --junitxml=pytest.xml --cov=fastapi_qp test/
 
       - uses: codecov/codecov-action@v2
         with:
