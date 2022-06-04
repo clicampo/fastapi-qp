@@ -9,6 +9,18 @@ from pydantic import BaseModel, ValidationError
 class QueryParam():
     @classmethod
     def params(_class: BaseModel):
+        """
+        Turns this schema into a parseable dependency for FastAPI.
+
+        Example:
+            >>> class MyQueryParams(BaseModel, QueryParam):
+            >>>     foo: str = Field(..., description="Foo", ...)
+            >>>     bar: str = Field(..., description="Bar", ...)
+            >>>
+            >>> @app.get("/")
+            >>> async def read(params: MyQueryParams = Depends(MyQueryParams.params())):
+            >>>     return params.dict()
+        """
         name = f"{_class.__name__}QP"
         names = []
         annotations: Dict[str, type] = {}
@@ -40,6 +52,27 @@ class QueryParam():
         return new_class
 
     def to_url(self):
+        """
+        Transforms the query params into a encoded URL component.
+        Returns None if there are no params.
+
+        Example:
+            >>> class MyQueryParams(BaseModel, QueryParam):
+            >>>     foo: str = Field(..., description="Foo", ...)
+            >>>     bar: str = Field(..., description="Bar", ...)
+            >>>
+            >>> @app.get("/")
+            >>> async def read(params: MyQueryParams = Depends(MyQueryParams.params())):
+            >>>     return params.dict()
+            >>>
+            >>> def test_query_params():
+            >>>     client = TestClient(app)
+            >>>     response = client.get("/" + (params.to_url() or ""))
+            >>>     assert response.json()['foo'] == 'bar'
+
+        Returns:
+            `None/str`: `None` if there are no params, otherwise a URL encoded string.
+        """
         instance: BaseModel = self
         params = [
             f'{name}={value}' for name, value in instance.dict(exclude_unset=True).items()
