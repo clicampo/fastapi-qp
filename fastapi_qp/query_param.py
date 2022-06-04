@@ -2,8 +2,8 @@ import inspect
 from types import FunctionType
 from typing import Dict
 
-from fastapi import Query
-from pydantic import BaseModel
+from fastapi import HTTPException, Query
+from pydantic import BaseModel, ValidationError
 
 
 class QueryParam():
@@ -15,11 +15,9 @@ class QueryParam():
         defaults = []
         for field_model in _class.__fields__.values():
             field_info = field_model.field_info
-
             names.append(field_model.name)
             annotations[field_model.name] = field_model.outer_type_
             defaults.append(Query(field_model.default, description=field_info.description))
-
         code = inspect.cleandoc('''
         def %s(%s):
             try:
@@ -29,7 +27,6 @@ class QueryParam():
                 for error in errors:
                     error['loc'] = ['query'] + list(error['loc'])
                 raise HTTPException(422, detail=errors)
-
         ''' % (
             name, ', '.join(names), _class.__name__,
             ', '.join(['%s=%s' % (name, name) for name in names])))
